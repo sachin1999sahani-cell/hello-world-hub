@@ -1,0 +1,24 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# runtime data
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# logs
+*.log
+nohup.out
+
+# os/editor
+.DS_Store
+*.swp
+
+# vercel local
+.vercel
+probe_pools.py
+probe_vesting.py

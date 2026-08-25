@@ -1,0 +1,17 @@
+[Unit]
+Description=RBNT Analytics dashboard (poller + API + site)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/rbnt-analytics/backend
+ExecStart=/root/rbnt-analytics/.venv/bin/python -u serve.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBNT Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/design.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-name">RBNT Analytics</span>
+  </div>
+  <nav class="nav" id="nav">
+    <span id="navIndicator" aria-hidden="true"></span>
+    <a href="#/" data-route="home">Home</a>
+    <a href="#/operators" data-route="operators">Node Operators</a>
+    <a href="#/treasury" data-route="treasury">Treasury</a>
+    <a href="#/dex" data-route="dex">DEX</a>
+    <a href="#/cex" data-route="cex">CEX</a>
+    <a href="#/holders" data-route="holders">Holders</a>
+    <form id="walletSearch" class="search">
+      <input id="searchAddr" type="text" placeholder="0x wallet address" autocomplete="off"
+             spellcheck="false" aria-label="Wallet address search">
+    </form>
+    <button id="themeToggle" class="btn ghost theme-toggle" aria-label="Toggle color theme"></button>
+  </nav>
+</header>
+
+<main class="page" id="view">
+  <section class="card"><p class="muted">Loading data. The poller refreshes every section on its own schedule.</p></section>
+</main>
+
+<div id="chartTip" class="chart-tip" hidden></div>
+
+<footer class="footer">
+  <p class="muted small">On-chain ground truth from Redbelly mainnet chain ID 151 via RPC and Routescan. Contextual percentages are not reconciled against bucket tokenomics. Open items are labeled where they exist.</p>
+</footer>
+
+<script>
+/* Split deploy: if the frontend is served from Vercel and the API lives on a
+   VPS, set this to the backend origin before that script tag loads app.js:
+   window.API_BASE = "https://your-backend-host.com"; */
+window.API_BASE = "";
+</script>
+<script src="/js/app.js"></script>
+</body>
+</html>

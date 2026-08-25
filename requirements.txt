@@ -1,0 +1,5 @@
+fastapi==0.141.1
+uvicorn==0.52.4
+web3==7.16.0
+requests==2.34.2
+apscheduler==3.11.3

@@ -1,0 +1,5 @@
+{
+  "outputDirectory": "backend/static",
+  "cleanUrls": true,
+  "rewrites": [{ "source": "/((?!js/|css/).*)", "destination": "/index.html" }]
+}
