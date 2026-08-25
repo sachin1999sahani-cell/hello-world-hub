@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RBNT Analytics</title>
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem("rbnt-theme");
+    var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.dataset.theme = saved || (prefersLight ? "light" : "dark");
+  } catch (e) {
+    document.documentElement.dataset.theme = "dark";
+  }
+}());
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" type="image/png" href="/img/favicon.png">
@@ -16,10 +27,7 @@
 <body>
 <header class="topbar">
   <div class="brand">
-    <picture class="brand-logo-wrap">
-      <source srcset="/img/dao-logo-on-light.png" media="(prefers-color-scheme: light)">
-      <img class="brand-logo" src="/img/dao-logo-on-dark.png" width="262" height="184" alt="Redbelly DAO logo" decoding="async" fetchpriority="high">
-    </picture>
+    <span class="brand-logo" role="img" aria-label="Redbelly DAO logo"></span>
     <span class="brand-name">RBNT Analytics</span>
   </div>
   <nav class="nav" id="nav">
