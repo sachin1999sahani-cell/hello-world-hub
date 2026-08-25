@@ -5,6 +5,7 @@
   "scripts": {
     "install": "true",
     "dev": "vite --host 0.0.0.0",
+    "build:dev": "vite build",
     "build": "vite build"
   },
   "devDependencies": {

@@ -6,16 +6,6 @@ const REFRESH_MS = 30000;
 let activeRoute = null;
 let refreshTimer = null;
 
-const LOGO_URLS = {
-  dark: "/img/dao-logo-on-dark.png",
-  light: "/img/dao-logo-on-light.png",
-};
-Object.values(LOGO_URLS).forEach(src => {
-  const img = new Image();
-  img.decoding = "async";
-  img.src = src;
-});
-
 /* ---------- formatting ---------- */
 const NF0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const NF2 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
@@ -1480,16 +1470,6 @@ function applyTheme(theme) {
   localStorage.setItem("rbnt-theme", theme);
   const toggle = document.getElementById("themeToggle");
   if (toggle) toggle.innerHTML = theme === "light" ? MOON_SVG : SUN_SVG;
-  const logo = document.querySelector(".brand-logo");
-  if (logo) {
-    const nextSrc = theme === "light" ? LOGO_URLS.light : LOGO_URLS.dark;
-    if (logo.getAttribute("src") !== nextSrc) {
-      logo.classList.add("is-switching");
-      logo.onload = () => logo.classList.remove("is-switching");
-      logo.src = nextSrc;
-      if (logo.complete) logo.classList.remove("is-switching");
-    }
-  }
 }
 
 async function boot() {

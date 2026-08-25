@@ -69,9 +69,13 @@ code, .mono, .num {
   position: sticky; top: 0; z-index: 50;
 }
 .brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; contain: layout paint; }
-.brand-logo-wrap { width: 66px; height: 46px; display: block; flex: 0 0 66px; overflow: hidden; }
-.brand-logo { width: 66px; height: 46px; display: block; object-fit: contain; opacity: 1; transition: opacity .18s ease; }
-.brand-logo.is-switching { opacity: 0; }
+.brand-logo {
+  width: 66px; height: 46px; display: block; flex: 0 0 66px;
+  background: center / contain no-repeat url("/img/dao-logo-on-dark.png");
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+[data-theme="light"] .brand-logo { background-image: url("/img/dao-logo-on-light.png"); }
 .brand-name { font-weight: 700; letter-spacing: 0.02em; }
 
 .nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-left: auto; position: relative; }
