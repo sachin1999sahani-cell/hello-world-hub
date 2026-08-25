@@ -118,17 +118,19 @@ function animateIn() {
 }
 
 /* ---------- reusable scoped table search ---------- */
-function searchInput(id, placeholder = "Filter by wallet address") {
+function searchInput(id, placeholder = "Filter by wallet address", initial = "") {
   return `<div class="tsearch">
-    <input id="${id}" type="text" placeholder="${esc(placeholder)}" autocomplete="off" spellcheck="false" aria-label="${esc(placeholder)}">
-    <button type="button" class="ts-clear" id="${id}-clear" aria-label="Clear filter" hidden>&times;</button>
+    <input id="${id}" type="text" value="${esc(initial)}" placeholder="${esc(placeholder)}" autocomplete="off" spellcheck="false" aria-label="${esc(placeholder)}">
+    <button type="button" class="ts-clear" id="${id}-clear" aria-label="Clear filter" ${initial ? "" : "hidden"}>&times;</button>
   </div>`;
 }
 
-function wireSearch(inputId, onChange) {
+function wireSearch(inputId, onChange, initial = "") {
   const inp = document.getElementById(inputId);
   const btn = document.getElementById(inputId + "-clear");
   if (!inp) return;
+  inp.value = initial;                 // survive auto-refresh re-renders
+  btn.hidden = !initial;
   let t = null;
   inp.addEventListener("input", () => {
     btn.hidden = !inp.value;
@@ -190,13 +192,13 @@ function renderLeaderboardTable(containerId, rows, pagerKey) {
   const q = (window._tblFilters && window._tblFilters[pagerKey]) || "";
   const filtered = q ? rows.filter(r => r.wallet.toLowerCase().includes(q)) : rows;
   if (!filtered.length) {
-    host.innerHTML = searchInput(pagerKey + "-search") +
+    host.innerHTML = searchInput(pagerKey + "-search", "Filter by wallet address", q) +
       `<p class="muted small">No wallet found${q ? ` matching "${esc(q)}"` : ""}.</p>`;
-    wireSearch(pagerKey + "-search", v => { window._tblFilters[pagerKey] = v; renderLeaderboardTable(containerId, rows, pagerKey); });
+    wireSearch(pagerKey + "-search", v => { window._tblFilters[pagerKey] = v; renderLeaderboardTable(containerId, rows, pagerKey); }, q);
     return;
   }
   const { slice, controls } = paginate(pagerKey, filtered, 25);
-  let html = searchInput(pagerKey + "-search");
+  let html = searchInput(pagerKey + "-search", "Filter by wallet address", q);
   html += `<div class="tablewrap"><table><thead><tr>
     <th>Wallet</th><th class="num">WRBNT balance</th><th class="num">Claimed total</th>
     <th class="num">Claims</th><th>Last claim</th><th>Sell signal</th></tr></thead><tbody>`;
@@ -213,7 +215,7 @@ function renderLeaderboardTable(containerId, rows, pagerKey) {
   wireSearch(pagerKey + "-search", v => {
     window._tblFilters[pagerKey] = v;
     renderLeaderboardTable(containerId, rows, pagerKey);
-  });
+  }, q);
   bindPagers(() => renderLeaderboardTable(containerId, rows, pagerKey));
 }
 
@@ -358,12 +360,14 @@ function renderRecipientTable(manager, allItems) {
   const key = "ret-" + manager.slice(0, 10);
   const q = (window._tblFilters && window._tblFilters[key]) || "";
   const filtered = q ? allItems.filter(it => it.wallet.toLowerCase().includes(q)) : allItems;
-  let html = `<details open><summary class="accent-link" style="cursor:pointer">Per-recipient states (${NF0.format(filtered.length)}${q ? " matching" : " total"})</summary>`;
-  html += searchInput(key + "-search");
+  window._retOpen = window._retOpen || {};
+  const isOpen = window._retOpen[manager] !== false; // default open
+  let html = `<details ${isOpen ? "open" : ""} data-mgr="${esc(manager)}"><summary class="accent-link" style="cursor:pointer">Per-recipient states (${NF0.format(filtered.length)}${q ? " matching" : " total"})</summary>`;
+  html += searchInput(key + "-search", "Filter by wallet address", q);
   if (!filtered.length) {
     html += `<p class="muted small">No wallet found${q ? ` matching "${esc(q)}"` : ""}.</p></details>`;
     host.innerHTML = html;
-    wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderRecipientTable(manager, allItems); });
+    wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderRecipientTable(manager, allItems); }, q);
     return;
   }
   const { slice, controls } = paginate(key, filtered, 25);
@@ -380,7 +384,9 @@ function renderRecipientTable(manager, allItems) {
   html += `</tbody></table></div>${controls}`;
   html += `<p class="muted small">All ${NF0.format(allItems.length)} records reachable. Poller refreshes states every 30 minutes.</p></details>`;
   host.innerHTML = html;
-  wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderRecipientTable(manager, allItems); });
+  const det = host.querySelector("details");
+  det.addEventListener("toggle", () => { window._retOpen[manager] = det.open; });
+  wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderRecipientTable(manager, allItems); }, q);
   bindPagers(() => renderRecipientTable(manager, allItems));
 }
 
@@ -1054,11 +1060,11 @@ async function renderMega() {
       const key = "megaBoard";
       const q = (window._tblFilters[key] || "");
       const filtered = q ? d.top_holders.filter(h => h.wallet.toLowerCase().includes(q)) : d.top_holders;
-      let inner = searchInput(key + "-search");
+      let inner = searchInput(key + "-search", "Filter by wallet address", q);
       if (!filtered.length) {
         inner += `<p class="muted small">No wallet found${q ? ` matching "${esc(q)}"` : ""}.</p>`;
         host.innerHTML = inner;
-        wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderBoard(); });
+        wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderBoard(); }, q);
         return;
       }
       const { slice, controls } = paginate(key, filtered, 25);
@@ -1072,7 +1078,7 @@ async function renderMega() {
       }
       inner += `</tbody></table></div>${controls}`;
       host.innerHTML = inner;
-      wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderBoard(); });
+      wireSearch(key + "-search", v => { window._tblFilters[key] = v; renderBoard(); }, q);
       bindPagers(renderBoard);
     };
     renderBoard();
@@ -1416,6 +1422,11 @@ async function route(name, force) {
       await ROUTES[name].fn();
     }
     animateIn();
+    // background refresh: put the reader back exactly where they were
+    if (window._restoreScroll != null) {
+      window.scrollTo(0, window._restoreScroll);
+      window._restoreScroll = null;
+    }
   } catch (e) {
     $view.innerHTML = `<div class="card"><p>Could not load data. ${esc(e.message)}</p><p class="muted">Retry happens automatically every 30 seconds.</p></div>`;
     animateIn();
@@ -1444,12 +1455,19 @@ async function boot() {
   initTheme();
   await route(location.hash || "#/");
   refreshTimer = setInterval(() => {
-    if (!activeRoute.startsWith("wallet/")) route(activeRoute, true);
+    if (activeRoute.startsWith("wallet/")) return;
+    if (document.hidden) return;                       // tab in background: skip
+    if (activeRoute === "home" && document.querySelector(".orb-node.expanded")) return; // dont close orbital mid-read
+    window._restoreScroll = window.scrollY;            // re-render without moving the page
+    route(activeRoute, true);
   }, REFRESH_MS);
 }
 boot();
 
 /* ---------- theme ---------- */
+const SUN_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>`;
+const MOON_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
 function initTheme() {
   const saved = localStorage.getItem("rbnt-theme");
   const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -1463,5 +1481,6 @@ function initTheme() {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem("rbnt-theme", theme);
-  document.getElementById("themeToggle").textContent = theme === "light" ? "Dark" : "Light";
+  // icon only - no text label
+  document.getElementById("themeToggle").innerHTML = theme === "light" ? MOON_SVG : SUN_SVG;
 }

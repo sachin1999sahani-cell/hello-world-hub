@@ -69,11 +69,7 @@ code, .mono, .num {
   position: sticky; top: 0; z-index: 50;
 }
 .brand { display: inline-flex; align-items: center; gap: 12px; }
-.brand-mark {
-  width: 28px; height: 28px; border-radius: var(--r-sm);
-  background: var(--accent);
-  clip-path: polygon(0 0, 100% 0, 100% 66%, 66% 100%, 0 100%);
-}
+.brand-logo { height: 30px; width: auto; display: block; border-radius: 6px; }
 .brand-name { font-weight: 700; letter-spacing: 0.02em; }
 
 .nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-left: auto; position: relative; }
@@ -160,7 +156,15 @@ tbody tr:hover { background: var(--bg-deep); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 td.num { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
 
-.addr { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-secondary); }
+.addr { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.card .addr, .orb-card .addr { display: inline-block; max-width: 100%; }
+@media (max-width: 720px) {
+  /* full addresses must never bleed out of cards/tables on small screens */
+  .tablewrap th, .tablewrap td { white-space: normal; }
+  .tablewrap td.num { white-space: nowrap; }
+  .grid > * { min-width: 0; }
+  .card { min-width: 0; }
+}
 
 /* ---------- status dot pattern ---------- */
 .status { display: inline-flex; align-items: center; gap: 8px; }
