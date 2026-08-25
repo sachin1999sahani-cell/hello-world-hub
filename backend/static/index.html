@@ -8,13 +8,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" type="image/png" href="/img/favicon.png">
 <link rel="apple-touch-icon" href="/img/favicon.png">
+<link rel="preload" as="image" href="/img/dao-logo-on-dark.png" fetchpriority="high">
+<link rel="preload" as="image" href="/img/dao-logo-on-light.png">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/design.css">
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <img class="brand-logo" src="/img/dao-logo-on-dark.png" alt="Redbelly DAO logo">
+    <picture class="brand-logo-wrap">
+      <source srcset="/img/dao-logo-on-light.png" media="(prefers-color-scheme: light)">
+      <img class="brand-logo" src="/img/dao-logo-on-dark.png" width="262" height="184" alt="Redbelly DAO logo" decoding="async" fetchpriority="high">
+    </picture>
     <span class="brand-name">RBNT Analytics</span>
   </div>
   <nav class="nav" id="nav">

@@ -68,8 +68,10 @@ code, .mono, .num {
   backdrop-filter: blur(12px);
   position: sticky; top: 0; z-index: 50;
 }
-.brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
-.brand-logo { height: 46px; width: auto; max-width: 170px; display: block; object-fit: contain; }
+.brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; contain: layout paint; }
+.brand-logo-wrap { width: 66px; height: 46px; display: block; flex: 0 0 66px; overflow: hidden; }
+.brand-logo { width: 66px; height: 46px; display: block; object-fit: contain; opacity: 1; transition: opacity .18s ease; }
+.brand-logo.is-switching { opacity: 0; }
 .brand-name { font-weight: 700; letter-spacing: 0.02em; }
 
 .nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-left: auto; position: relative; }
