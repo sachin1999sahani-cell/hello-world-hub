@@ -7,8 +7,8 @@ let activeRoute = null;
 let refreshTimer = null;
 
 const LOGO_URLS = {
-  dark: "/__l5e/assets-v1/82c4bbe0-b748-4eb8-aaf7-9f70f813e06a/dao-logo-on-dark.png",
-  light: "/__l5e/assets-v1/eb9be6d2-9a8b-4420-8355-bec0d5e808c0/dao-logo-on-light.png",
+  dark: "/img/dao-logo-on-dark.png",
+  light: "/img/dao-logo-on-light.png",
 };
 
 /* ---------- formatting ---------- */
