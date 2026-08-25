@@ -25,7 +25,14 @@ python3 -m venv .venv
 .venv/bin/pip install --quiet --upgrade pip
 .venv/bin/pip install --quiet -r requirements.txt
 
-echo "== [4/6] systemd service"
+echo "== [4/6] import smoke test (fails fast on broken code)"
+cd "$APP_DIR/backend"
+if ! ../.venv/bin/python -c "import app" 2>/tmp/opencode_import_err; then
+  echo "IMPORT CHECK FAILED:"; cat /tmp/opencode_import_err
+  exit 1
+fi
+
+echo "== [5/6] systemd service"
 cat > /etc/systemd/system/rbnt-analytics.service <<UNIT
 [Unit]
 Description=RBNT Analytics dashboard (poller + API + site)

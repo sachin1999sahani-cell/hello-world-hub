@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from sources import db
+import db
 from config import SCHEDULE, BRIDGED_WRBNT
 
 app = FastAPI(title="RBNT Analytics", docs_url="/api/docs")
