@@ -68,8 +68,8 @@ code, .mono, .num {
   backdrop-filter: blur(12px);
   position: sticky; top: 0; z-index: 50;
 }
-.brand { display: inline-flex; align-items: center; gap: 12px; }
-.brand-logo { height: 30px; width: auto; display: block; border-radius: 6px; }
+.brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-logo { height: 46px; width: auto; max-width: 170px; display: block; object-fit: contain; }
 .brand-name { font-weight: 700; letter-spacing: 0.02em; }
 
 .nav { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; margin-left: auto; position: relative; }
@@ -251,7 +251,8 @@ td.num { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
 details summary { color: var(--accent-text); }
 
 /* ---------- theme toggle ---------- */
-.theme-toggle { padding: 6px 10px; font-size: 13px; }
+.theme-toggle { padding: 0; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; }
+.theme-toggle svg { width: 16px; height: 16px; display: block; }
 
 /* ---------- home / hero ---------- */
 .hero { padding: 40px 0 8px; }

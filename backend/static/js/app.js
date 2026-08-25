@@ -6,6 +6,11 @@ const REFRESH_MS = 30000;
 let activeRoute = null;
 let refreshTimer = null;
 
+const LOGO_URLS = {
+  dark: "/img/dao-logo-on-dark.png",
+  light: "/img/dao-logo-on-light.png",
+};
+
 /* ---------- formatting ---------- */
 const NF0 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 const NF2 = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
@@ -1451,19 +1456,6 @@ document.getElementById("walletSearch").addEventListener("submit", e => {
   }
 });
 
-async function boot() {
-  initTheme();
-  await route(location.hash || "#/");
-  refreshTimer = setInterval(() => {
-    if (activeRoute.startsWith("wallet/")) return;
-    if (document.hidden) return;                       // tab in background: skip
-    if (activeRoute === "home" && document.querySelector(".orb-node.expanded")) return; // dont close orbital mid-read
-    window._restoreScroll = window.scrollY;            // re-render without moving the page
-    route(activeRoute, true);
-  }, REFRESH_MS);
-}
-boot();
-
 /* ---------- theme ---------- */
 const SUN_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>`;
 const MOON_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
@@ -1481,6 +1473,21 @@ function initTheme() {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   localStorage.setItem("rbnt-theme", theme);
-  // icon only - no text label
-  document.getElementById("themeToggle").innerHTML = theme === "light" ? MOON_SVG : SUN_SVG;
+  const toggle = document.getElementById("themeToggle");
+  if (toggle) toggle.innerHTML = theme === "light" ? MOON_SVG : SUN_SVG;
+  const logo = document.querySelector(".brand-logo");
+  if (logo) logo.src = theme === "light" ? LOGO_URLS.light : LOGO_URLS.dark;
 }
+
+async function boot() {
+  initTheme();
+  await route(location.hash || "#/");
+  refreshTimer = setInterval(() => {
+    if (activeRoute && activeRoute.startsWith("wallet/")) return;
+    if (document.hidden) return;                       // tab in background: skip
+    if (activeRoute === "home" && document.querySelector(".orb-node.expanded")) return; // dont close orbital mid-read
+    window._restoreScroll = window.scrollY;            // re-render without moving the page
+    route(activeRoute || "home", true);
+  }, REFRESH_MS);
+}
+boot();
